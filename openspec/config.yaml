@@ -13,6 +13,6 @@ schema: spec-driven
 # Add custom rules for specific artifacts or all artifacts
 rules:
   all:
-    - "Change ID Naming Rule: All new changes MUST use the format NN-description where NN is a zero-padded two-digit number (e.g., 01-, 02-, 03-)"
+    - "Change ID Naming Rule: All new changes MUST use the format cNN-description where NN is a zero-padded two-digit number (e.g., c01-, c02-, c03-)"
     - "New changes must increment by 1 from the current maximum Change ID number (MAX_ID + 1)"
     - "Do not modify or reuse existing Change IDs"
