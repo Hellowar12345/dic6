@@ -40,9 +40,9 @@ DONE=0
 TODO=0
 
 if [ -f "$TASKS_FILE" ]; then
-    TOTAL=$(grep -c '^\- \[' "$TASKS_FILE" 2>/dev/null || echo "0")
-    DONE=$(grep -c '^\- \[x\]' "$TASKS_FILE" 2>/dev/null || echo "0")
-    TODO=$(grep -c '^\- \[ \]' "$TASKS_FILE" 2>/dev/null || echo "0")
+    TOTAL=$(grep -c '^\- \[' "$TASKS_FILE" 2>/dev/null | tr -d '\r' || echo "0")
+    DONE=$(grep -c '^\- \[x\]' "$TASKS_FILE" 2>/dev/null | tr -d '\r' || echo "0")
+    TODO=$(grep -c '^\- \[ \]' "$TASKS_FILE" 2>/dev/null | tr -d '\r' || echo "0")
     echo "  Tasks: $DONE/$TOTAL complete, $TODO remaining"
 else
     echo "  ⚠️  tasks.md not found"
