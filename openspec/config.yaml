@@ -1,0 +1,18 @@
+schema: spec-driven
+
+# Project context (optional)
+# This is shown to AI when creating artifacts
+# Add your tech stack, conventions, style guides, etc.
+# Example:
+#   context: |
+#     Tech stack: HTML5, CSS3, Vanilla JavaScript, Chart.js
+#     We use conventional commits
+#     Domain: smart parking prediction system (DD-LSTM)
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts or all artifacts
+rules:
+  all:
+    - "Change ID Naming Rule: All new changes MUST use the format NN-description where NN is a zero-padded two-digit number (e.g., 01-, 02-, 03-)"
+    - "New changes must increment by 1 from the current maximum Change ID number (MAX_ID + 1)"
+    - "Do not modify or reuse existing Change IDs"
