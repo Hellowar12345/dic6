@@ -1,0 +1,641 @@
+/* ============================================================
+   style.css — 智慧停車位預測系統 Dashboard 設計系統
+   ============================================================ */
+
+/* ---- Design Tokens ---- */
+:root {
+    --bg-primary: #0a0e1a;
+    --bg-secondary: #111827;
+    --bg-card: rgba(17, 24, 39, 0.85);
+    --bg-glass: rgba(255, 255, 255, 0.04);
+    --border-glass: rgba(255, 255, 255, 0.08);
+    --text-primary: #f0f0f5;
+    --text-secondary: #9ca3af;
+    --text-muted: #6b7280;
+    --accent-purple: #6C5CE7;
+    --accent-teal: #00CEC9;
+    --accent-green: #00B894;
+    --accent-yellow: #FDCB6E;
+    --accent-red: #FF7675;
+    --accent-orange: #E17055;
+    --gradient-main: linear-gradient(135deg, #0a0e1a 0%, #1a1040 50%, #0a0e1a 100%);
+    --gradient-card: linear-gradient(145deg, rgba(108, 92, 231, 0.08), rgba(0, 206, 201, 0.04));
+    --gradient-accent: linear-gradient(135deg, #6C5CE7, #00CEC9);
+    --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3);
+    --shadow-glow-purple: 0 0 20px rgba(108, 92, 231, 0.25);
+    --shadow-glow-teal: 0 0 20px rgba(0, 206, 201, 0.2);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ---- Reset & Base ---- */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--gradient-main);
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Animated background particles */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+        radial-gradient(circle at 20% 80%, rgba(108, 92, 231, 0.06) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(0, 206, 201, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(108, 92, 231, 0.03) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ---- Layout ---- */
+.app-container {
+    position: relative;
+    z-index: 1;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 20px 24px 40px;
+}
+
+/* ---- Header ---- */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    margin-bottom: 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(16px);
+    box-shadow: var(--shadow-card);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-logo {
+    width: 44px;
+    height: 44px;
+    background: var(--gradient-accent);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    box-shadow: var(--shadow-glow-purple);
+}
+
+.header-title h1 {
+    font-size: 18px;
+    font-weight: 700;
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.header-title p {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    background: rgba(0, 184, 148, 0.15);
+    border: 1px solid rgba(0, 184, 148, 0.3);
+    border-radius: 20px;
+    font-size: 11px;
+    color: var(--accent-green);
+    font-weight: 600;
+}
+
+.header-badge .dot {
+    width: 6px;
+    height: 6px;
+    background: var(--accent-green);
+    border-radius: 50%;
+    animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+}
+
+.update-time {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* ---- Stats Row ---- */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    backdrop-filter: blur(12px);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-accent);
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-glow-purple);
+    border-color: rgba(108, 92, 231, 0.2);
+}
+
+.stat-card:hover::before {
+    opacity: 1;
+}
+
+.stat-card .stat-icon {
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+.stat-card .stat-value {
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 4px;
+}
+
+.stat-card .stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-card .stat-change {
+    font-size: 11px;
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.stat-change.up { color: var(--accent-red); }
+.stat-change.down { color: var(--accent-green); }
+.stat-change.stable { color: var(--text-muted); }
+
+/* ---- Weather Panel ---- */
+.weather-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.weather-main {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.weather-icon {
+    font-size: 36px;
+    filter: drop-shadow(0 2px 8px rgba(253, 203, 110, 0.3));
+}
+
+.weather-temp {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.weather-condition {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.weather-details {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.weather-detail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.weather-detail .wd-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.weather-detail .wd-value {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* ---- Section Title ---- */
+.section-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-title .title-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--gradient-accent);
+    border-radius: 50%;
+}
+
+/* ---- Parking Cards Grid ---- */
+.parking-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.parking-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    backdrop-filter: blur(12px);
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.parking-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card);
+}
+
+.parking-card.active {
+    border-color: var(--accent-purple);
+    box-shadow: var(--shadow-glow-purple);
+}
+
+.parking-card.status-normal { border-left: 3px solid var(--accent-green); }
+.parking-card.status-warning { border-left: 3px solid var(--accent-yellow); }
+.parking-card.status-critical {
+    border-left: 3px solid var(--accent-red);
+    animation: critical-pulse 2s infinite;
+}
+
+@keyframes critical-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 118, 117, 0); }
+    50% { box-shadow: 0 0 12px 2px rgba(255, 118, 117, 0.2); }
+}
+
+.pc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.pc-name {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.3;
+    max-width: 70%;
+}
+
+.pc-area {
+    font-size: 10px;
+    color: var(--text-muted);
+    padding: 2px 8px;
+    background: var(--bg-glass);
+    border-radius: 10px;
+}
+
+.pc-occupancy {
+    font-size: 32px;
+    font-weight: 800;
+    margin: 8px 0 4px;
+}
+
+.pc-occupancy.normal { color: var(--accent-green); }
+.pc-occupancy.warning { color: var(--accent-yellow); }
+.pc-occupancy.critical { color: var(--accent-red); }
+
+.pc-available {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+}
+
+.pc-predictions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-glass);
+}
+
+.pc-pred {
+    text-align: center;
+}
+
+.pc-pred-label {
+    font-size: 9px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.pc-pred-value {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.pc-pred-trend {
+    font-size: 10px;
+}
+
+.trend-rising { color: var(--accent-red); }
+.trend-falling { color: var(--accent-green); }
+.trend-stable { color: var(--text-muted); }
+
+/* ---- Charts Section ---- */
+.charts-section {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.chart-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    backdrop-filter: blur(12px);
+}
+
+.chart-wrapper {
+    position: relative;
+    height: 320px;
+}
+
+/* ---- Model Metrics ---- */
+.metrics-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    text-align: center;
+    backdrop-filter: blur(12px);
+    transition: var(--transition);
+}
+
+.metric-card:hover {
+    border-color: rgba(108, 92, 231, 0.2);
+}
+
+.metric-value {
+    font-size: 36px;
+    font-weight: 800;
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.metric-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.metric-desc {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 8px;
+}
+
+/* ---- Model Comparison Charts ---- */
+.comparison-section {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+/* ---- Alerts ---- */
+.alerts-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    backdrop-filter: blur(12px);
+    margin-bottom: 28px;
+}
+
+.alert-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    transition: var(--transition);
+    background: var(--bg-glass);
+    border: 1px solid transparent;
+}
+
+.alert-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.alert-critical { border-left: 3px solid var(--accent-red); }
+.alert-warning { border-left: 3px solid var(--accent-yellow); }
+.alert-prediction { border-left: 3px solid var(--accent-purple); }
+
+.alert-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.alert-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.alert-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+}
+
+.alert-level {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 1px 6px;
+    border-radius: 4px;
+}
+
+.alert-critical .alert-level { background: rgba(255, 118, 117, 0.2); color: var(--accent-red); }
+.alert-warning .alert-level { background: rgba(253, 203, 110, 0.2); color: var(--accent-yellow); }
+.alert-prediction .alert-level { background: rgba(108, 92, 231, 0.2); color: var(--accent-purple); }
+
+.alert-lot {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.alert-time {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-left: auto;
+}
+
+.alert-message {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.alert-empty {
+    text-align: center;
+    padding: 24px;
+    color: var(--text-muted);
+}
+
+.alert-empty-icon {
+    font-size: 32px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+/* ---- Footer ---- */
+.footer {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-muted);
+    font-size: 11px;
+    border-top: 1px solid var(--border-glass);
+}
+
+.footer a {
+    color: var(--accent-purple);
+    text-decoration: none;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 1200px) {
+    .parking-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 900px) {
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .charts-section { grid-template-columns: 1fr; }
+    .comparison-section { grid-template-columns: 1fr; }
+    .metrics-section { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 600px) {
+    .app-container { padding: 12px; }
+    .header { flex-direction: column; gap: 12px; text-align: center; }
+    .parking-grid { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .metrics-section { grid-template-columns: 1fr; }
+    .weather-panel { flex-direction: column; text-align: center; }
+}
+
+/* ---- Loading Animation ---- */
+.loading-spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border-glass);
+    border-top-color: var(--accent-purple);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: rgba(108, 92, 231, 0.3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(108, 92, 231, 0.5); }

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧停車位預測系統 (DD-LSTM) | Smart Parking Prediction</title>
+    <meta name="description" content="透過 DD-LSTM 深度學習模型，整合多源資料即時預測停車位可用率，消除行車時間差痛點。">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app-container">
+
+    <!-- ====== Header ====== -->
+    <header class="header" id="app-header">
+        <div class="header-left">
+            <div class="header-logo">🅿️</div>
+            <div class="header-title">
+                <h1>智慧停車位預測系統</h1>
+                <p>DD-LSTM Data-Driven Multi-Feature Prediction</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="header-badge">
+                <span class="dot"></span>
+                即時監控中
+            </div>
+            <div class="update-time" id="update-time">最後更新: --:--:--</div>
+        </div>
+    </header>
+
+    <!-- ====== Stats Row ====== -->
+    <section class="stats-row" id="stats-section">
+        <div class="stat-card">
+            <div class="stat-icon">🏢</div>
+            <div class="stat-value" id="stat-total-lots">-</div>
+            <div class="stat-label">監測停車場</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🚗</div>
+            <div class="stat-value" id="stat-total-spaces">-</div>
+            <div class="stat-label">總車位數</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-value" id="stat-available">-</div>
+            <div class="stat-label">即時可用車位</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-value" id="stat-avg-occupancy">-</div>
+            <div class="stat-label">平均佔用率</div>
+        </div>
+    </section>
+
+    <!-- ====== Weather Panel ====== -->
+    <section class="weather-panel" id="weather-section">
+        <div class="weather-main">
+            <span class="weather-icon" id="weather-icon">☀️</span>
+            <div>
+                <div class="weather-temp" id="weather-temp">--°C</div>
+                <div class="weather-condition" id="weather-condition">載入中...</div>
+            </div>
+        </div>
+        <div class="weather-details">
+            <div class="weather-detail">
+                <span class="wd-label">濕度</span>
+                <span class="wd-value" id="weather-humidity">--%</span>
+            </div>
+            <div class="weather-detail">
+                <span class="wd-label">降雨量</span>
+                <span class="wd-value" id="weather-rainfall">--mm</span>
+            </div>
+            <div class="weather-detail">
+                <span class="wd-label">UV 指數</span>
+                <span class="wd-value" id="weather-uv">--</span>
+            </div>
+            <div class="weather-detail">
+                <span class="wd-label">天氣影響</span>
+                <span class="wd-value">🔮 已整合至預測</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== Parking Cards ====== -->
+    <div class="section-title">
+        <span class="title-dot"></span>
+        停車場即時狀態 — 點擊查看趨勢
+    </div>
+    <section class="parking-grid" id="parking-grid">
+        <!-- JS 動態渲染 -->
+    </section>
+
+    <!-- ====== Trend Chart + Heatmap ====== -->
+    <div class="section-title">
+        <span class="title-dot"></span>
+        佔用率視覺化分析
+    </div>
+    <section class="charts-section">
+        <div class="chart-container">
+            <div class="chart-wrapper">
+                <canvas id="trend-chart"></canvas>
+            </div>
+        </div>
+        <div class="chart-container">
+            <div class="chart-wrapper">
+                <canvas id="heatmap-chart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== Model Metrics ====== -->
+    <div class="section-title">
+        <span class="title-dot"></span>
+        DD-LSTM 模型效能指標
+    </div>
+    <section class="metrics-section">
+        <div class="metric-card">
+            <div class="metric-value" id="metric-mae">--</div>
+            <div class="metric-label">MAE</div>
+            <div class="metric-desc">平均絕對誤差 (%)</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value" id="metric-rmse">--</div>
+            <div class="metric-label">RMSE</div>
+            <div class="metric-desc">均方根誤差 (%)</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value" id="metric-accuracy">--</div>
+            <div class="metric-label">Accuracy</div>
+            <div class="metric-desc">預測準確率</div>
+        </div>
+    </section>
+
+    <!-- ====== Model Comparison ====== -->
+    <div class="section-title">
+        <span class="title-dot"></span>
+        模型效能比較 (vs Baselines)
+    </div>
+    <section class="comparison-section">
+        <div class="chart-container">
+            <div class="chart-wrapper">
+                <canvas id="comparison-chart"></canvas>
+            </div>
+        </div>
+        <div class="chart-container">
+            <div class="chart-wrapper">
+                <canvas id="accuracy-chart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== Alerts ====== -->
+    <div class="section-title">
+        <span class="title-dot"></span>
+        智慧警報通知
+        <span id="alert-badge" style="display:none; background:var(--accent-red); color:#fff; font-size:10px; padding:2px 8px; border-radius:10px; font-weight:700; margin-left:8px;">0</span>
+    </div>
+    <section class="alerts-container">
+        <div id="alerts-list">
+            <div class="alert-empty">
+                <span class="alert-empty-icon"><span class="loading-spinner"></span></span>
+                <p>載入中...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== Footer ====== -->
+    <footer class="footer">
+        智慧停車位預測系統 (DD-LSTM) &copy; 2026 | 台北市公有路外停車場 |
+        Powered by <a href="https://github.com/Hellowar12345/dic6" target="_blank">Antigravity + OpenSpec</a>
+    </footer>
+
+</div>
+
+<!-- ====== Scripts ====== -->
+<script src="js/data.js"></script>
+<script src="js/model.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/alerts.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
